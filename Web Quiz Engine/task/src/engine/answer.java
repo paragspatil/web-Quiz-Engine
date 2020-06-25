@@ -1,13 +1,16 @@
 package engine;
 
-public class answer {
-    private String answer;
+import org.springframework.stereotype.Component;
 
-    public void setAnswer(String answer) {
+public class answer {
+    private int[] answer;
+
+    public void setAnswer(int[] answer) {
         this.answer = answer;
     }
 
-    public String getAnswer() {
+    public int[] getAnswer() {
         return answer;
     }
+
 }
