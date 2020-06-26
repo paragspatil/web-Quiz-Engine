@@ -2,15 +2,15 @@ package engine;
 
 import javafx.application.Application;
 import org.springframework.boot.SpringApplication;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @RestController
 public class QuizController {
@@ -21,18 +21,37 @@ public class QuizController {
     public QuizController(){
 
     }
+
+
+
     @PostMapping(value = "/api/quizzes",consumes = "application/json")
     public getquiz getquiz(@RequestBody quiz q){
-        questions.add(q);
-        getquestions.add(new getquiz(id,q.getTitle(),q.getText(),q.getOptions()));
-        id = id + 1;
-        return new getquiz(id,q.getTitle(),q.getText(),q.getOptions());
+        System.out.println(q.getOptions().toString());
+        System.out.println(q.getText());
+        System.out.println(q);
+        //String json = matchService.getMatchJson(q);
+        if(q.getOptions().length<2 || Objects.equals(q.getTitle(),"") ||Objects.equals(q.getText(),"")){
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "entity not found"
+            );
+        }
+
+        else {
+            questions.add(q);
+            getquestions.add(new getquiz(id, q.getTitle(), q.getText(), q.getOptions()));
+            id = id + 1;
+            return new getquiz(id, q.getTitle(), q.getText(), q.getOptions());
+        }
     }
 
-
-    @RequestMapping(value = "/api/quizzes/{question_id}/solve", method = RequestMethod.POST,consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public feedback getfeedback(@PathVariable int question_id,answer ans){
-        if(Objects.equals(questions.get(question_id-1).getAnswer(),ans.getAnswer())){
+    @RequestMapping(value = "/api/quizzes/{question_id}/solve", method = RequestMethod.POST,consumes = "application/json")
+    public feedback getfeedback(@PathVariable int question_id,@RequestBody answer ans){
+        System.out.println(ans.getAnswer().length);
+        System.out.println(questions.get(question_id-1).getAnswer());
+        if(questions.get(question_id-1).getAnswer() == null && ans.getAnswer().length == 0){
+            return new feedback(true,"Congratulations, you're right!");
+        }
+        else if(Arrays.equals(ans.getAnswer(),questions.get(question_id-1).getAnswer())){
             return new feedback(true,"Congratulations, you're right!");
         }
         else {
@@ -41,11 +60,7 @@ public class QuizController {
     }
     @GetMapping(value = "/api/quizzes/{tempid}")
     public getquiz getquizbuid(@PathVariable int tempid){
-        if(tempid>questions.size()){
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "entity not found"
-            );
-        }
+
         return new getquiz(tempid,questions.get(tempid-1).getTitle(),questions.get(tempid-1).getText(),questions.get(tempid-1).getOptions());
     }
 

@@ -1,10 +1,14 @@
 package engine;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-public class quiz {
+public class quiz implements Serializable {
     private  String title;
     private  String text;
     private String[] options;
@@ -40,11 +44,11 @@ public class quiz {
     public void setOptions(String[] options) {
         this.options = options;
     }
-
+    @JsonProperty("answer")
     public void setAnswer(int[] answer) {
         this.answer = answer;
     }
-
+    @JsonIgnore
     public int[] getAnswer() {
         return answer;
     }

@@ -2,15 +2,18 @@ package engine;
 
 import org.springframework.stereotype.Component;
 
-public class answer {
-    private int[] answer;
+import java.util.ArrayList;
+import java.util.List;
 
-    public void setAnswer(int[] answer) {
-        this.answer = answer;
+public class answer {
+    private int[] ans;
+
+    public void setAnswer(int[] ans) {
+        this.ans = ans;
     }
 
     public int[] getAnswer() {
-        return answer;
+        return ans;
     }
 
 }
